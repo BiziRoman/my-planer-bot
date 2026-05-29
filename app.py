@@ -242,6 +242,11 @@ async def lifespan(app: FastAPI):
 # Создаем приложение FastAPI и передаем ему наш lifespan
 app = FastAPI(title="Planner Bot Admin", lifespan=lifespan)
 
+# Специальный легковесный эндпоинт для мониторинга (UptimeRobot)
+# Он НЕ делает запросов к базе данных, чтобы не тратить ресурсы
+@app.get("/health")
+async def health_check():
+    return {"status": "alive"}
 
 @app.get("/", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
