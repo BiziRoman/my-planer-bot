@@ -1,0 +1,14 @@
+# Секреты
+.env
+
+# Виртуальное окружение (твои версии)git rm -r --cached .
+.venv/
+.venv1/
+venv/
+
+# Python (кэш)
+__pycache__/
+*.pyc
+
+# IDE (настройки PyCharm)
+.idea/
