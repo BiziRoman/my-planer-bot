@@ -3,7 +3,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -243,9 +243,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Planner Bot Admin", lifespan=lifespan)
 
 # Специальный легковесный эндпоинт для мониторинга (UptimeRobot)
-# Он НЕ делает запросов к базе данных, чтобы не тратить ресурсы
-@app.get("/health")
-async def health_check():
+# Принимает и GET (от браузера), и HEAD (от пингеров)
+@app.api_route("/health", methods=["GET", "HEAD"])
+async def health_check(request: Request):
+    if request.method == "HEAD":
+        # Для HEAD-запроса просто возвращаем пустой ответ со статусом 200 ОК
+        return Response(status_code=200)
+    # Для GET-запроса возвращаем JSON как раньше
     return {"status": "alive"}
 
 @app.get("/", response_class=HTMLResponse)
